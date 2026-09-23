@@ -2,39 +2,54 @@ import { useEffect, useState } from 'react'
 import {
     Alert,
     Box,
+    Button,
     Card,
     CardContent,
     CircularProgress,
     Stack,
     Typography,
 } from '@mui/material'
-import { getAnalyticsSummary } from '../api/analyticsApi'
-import type { AnalyticsSummary } from '../types/analytics'
+import { getAnalyticsError, getAnalyticsSummary } from '../api/analyticsApi'
+import type {
+    AnalyticsRequestError,
+    AnalyticsSummary,
+} from '../types/analytics'
 
 export default function AnalyticsPage() {
     const [summary, setSummary] =
         useState<AnalyticsSummary | null>(null)
 
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+    const [error, setError] = useState<AnalyticsRequestError | null>(null)
+    const [requestVersion, setRequestVersion] = useState(0)
 
     useEffect(() => {
+        const controller = new AbortController()
+        let isActive = true
+
         async function loadSummary() {
             try {
                 setLoading(true)
                 setError(null)
 
-                const response = await getAnalyticsSummary()
-                setSummary(response)
-            } catch {
-                setError('Analytics data could not be loaded.')
+                const response = await getAnalyticsSummary({ signal: controller.signal })
+                if (isActive) setSummary(response)
+            } catch (requestError: unknown) {
+                if (isActive && !controller.signal.aborted) {
+                    setError(getAnalyticsError(requestError))
+                }
             } finally {
-                setLoading(false)
+                if (isActive) setLoading(false)
             }
         }
 
         void loadSummary()
-    }, [])
+
+        return () => {
+            isActive = false
+            controller.abort()
+        }
+    }, [requestVersion])
 
     if (loading) {
         return (
@@ -93,7 +108,14 @@ export default function AnalyticsPage() {
                 </Typography>
             </Box>
 
-            {error && <Alert severity="error">{error}</Alert>}
+            {error && (
+                <Alert
+                    action={error.kind === 'request' ? <Button color="inherit" onClick={() => setRequestVersion((version) => version + 1)} size="small">Retry</Button> : undefined}
+                    severity="error"
+                >
+                    {error.message}
+                </Alert>
+            )}
 
             {!error && (
                 <Box

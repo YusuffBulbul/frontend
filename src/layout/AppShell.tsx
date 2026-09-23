@@ -23,6 +23,7 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
+import { hasAdminRole } from '../utils/authRoles'
 
 const DRAWER_WIDTH = 248
 
@@ -30,7 +31,6 @@ const navigationItems = [
     { label: 'Dashboard', path: '/dashboard', icon: <DashboardOutlinedIcon /> },
     { label: 'Kanban', path: '/kanban', icon: <DashboardOutlinedIcon /> },
     { label: 'Tasks', path: '/tasks', icon: <AssignmentOutlinedIcon /> },
-    { label: 'Analytics', path: '/analytics', icon: <InsightsOutlinedIcon /> },
 ]
 
 function initials(name: string): string {
@@ -59,7 +59,7 @@ export default function AppShell() {
             </Toolbar>
             <Divider />
             <List sx={{ px: 1.5, py: 2 }}>
-                {navigationItems.map((item) => (
+                {[...navigationItems, ...(hasAdminRole(user) ? [{ label: 'Analytics', path: '/analytics', icon: <InsightsOutlinedIcon /> }] : [])].map((item) => (
                     <ListItemButton
                         component={Link}
                         key={item.path}

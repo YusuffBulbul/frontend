@@ -7,3 +7,10 @@ export interface AnalyticsSummary {
     completedTasks: number
     totalNotifications: number
 }
+
+export type AnalyticsRequestErrorKind = 'forbidden' | 'request'
+
+export interface AnalyticsRequestError {
+    kind: AnalyticsRequestErrorKind
+    message: string
+}

@@ -16,6 +16,7 @@ import TasksPage from './pages/TasksPage'
 import ProtectedRoute from './routes/ProtectedRoute'
 import PublicOnlyRoute from './routes/PublicOnlyRoute'
 import RouteLoading from './routes/RouteLoading'
+import RoleProtectedRoute from './routes/RoleProtectedRoute'
 
 function HomeRedirect() {
   const { isAuthenticated, isInitializing } = useAuth()
@@ -38,7 +39,9 @@ export default function App() {
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/kanban" element={<KanbanPage />} />
                 <Route path="/tasks" element={<TasksPage />} />
-                <Route path="/analytics" element={<AnalyticsPage />} />
+                <Route element={<RoleProtectedRoute />}>
+                  <Route path="/analytics" element={<AnalyticsPage />} />
+                </Route>
               </Route>
             </Route>
             <Route path="/" element={<HomeRedirect />} />
