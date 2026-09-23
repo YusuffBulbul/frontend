@@ -24,7 +24,11 @@ export default function RecentTasks({ tasks }: RecentTasksProps) {
             </Typography>
             <List disablePadding>
                 {tasks.map((task) => (
-                    <ListItemButton component={Link} key={task.id} to="/tasks">
+                    <ListItemButton
+                        component={Link}
+                        key={task.id}
+                        to={`/tasks?status=${task.status}`}
+                    >
                         <ListItemText
                             primary={task.title}
                             secondary={`Created ${formatTaskDate(task.createdAt)}`}

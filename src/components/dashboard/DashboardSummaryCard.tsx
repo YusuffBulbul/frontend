@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react'
 import { Box, Card, CardContent, Typography } from '@mui/material'
+import { Link } from 'react-router-dom'
 
 interface DashboardSummaryCardProps {
     label: string
     value: number
     icon: ReactNode
     accent: string
+    to?: string
 }
 
 export default function DashboardSummaryCard({
@@ -13,9 +15,20 @@ export default function DashboardSummaryCard({
     value,
     icon,
     accent,
+    to,
 }: DashboardSummaryCardProps) {
     return (
-        <Card component="article" sx={{ height: '100%' }}>
+        <Card
+            component={to ? Link : 'article'}
+            to={to}
+            sx={{
+                color: 'inherit',
+                height: '100%',
+                textDecoration: 'none',
+                transition: 'box-shadow 160ms ease, transform 160ms ease',
+                '&:hover, &:focus-visible': { boxShadow: 4, transform: 'translateY(-2px)' },
+            }}
+        >
             <CardContent sx={{ p: 2.5 }}>
                 <Box sx={{ alignItems: 'flex-start', display: 'flex', justifyContent: 'space-between', gap: 2 }}>
                     <Box>

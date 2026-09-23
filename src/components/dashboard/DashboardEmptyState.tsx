@@ -1,8 +1,11 @@
 import AddTaskOutlinedIcon from '@mui/icons-material/AddTaskOutlined'
 import { Button, Card, CardContent, Stack, Typography } from '@mui/material'
-import { Link } from 'react-router-dom'
 
-export default function DashboardEmptyState() {
+interface DashboardEmptyStateProps {
+    onCreateTask: () => void
+}
+
+export default function DashboardEmptyState({ onCreateTask }: DashboardEmptyStateProps) {
     return (
         <Card component="section" variant="outlined">
             <CardContent sx={{ p: { xs: 3, sm: 4 }, textAlign: 'center' }}>
@@ -14,7 +17,7 @@ export default function DashboardEmptyState() {
                     <Typography color="text.secondary">
                         Add a task to begin tracking your personal work here.
                     </Typography>
-                    <Button component={Link} to="/tasks" variant="contained">
+                    <Button onClick={onCreateTask} variant="contained">
                         Create a task
                     </Button>
                 </Stack>

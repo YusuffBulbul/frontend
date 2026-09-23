@@ -20,6 +20,8 @@ import TaskFormDialog from '../components/TaskFormDialog'
 import type { TaskResponse } from '../types/task'
 import type { TaskSortOption, TaskStatusFilter } from '../types/taskFilters'
 import { filterAndSortTasks } from '../utils/taskFilters'
+import { parseTaskStatus, withTaskStatus } from '../utils/taskQueryParams'
+import { useSearchParams } from 'react-router-dom'
 
 const STATUS_FILTER_OPTIONS: Array<{ label: string; value: TaskStatusFilter }> = [
     { label: 'All statuses', value: 'ALL' },
@@ -36,11 +38,11 @@ const SORT_OPTIONS: Array<{ label: string; value: TaskSortOption }> = [
 ]
 
 export default function TasksPage() {
+    const [searchParams, setSearchParams] = useSearchParams()
     const [tasks, setTasks] = useState<TaskResponse[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [search, setSearch] = useState('')
-    const [statusFilter, setStatusFilter] = useState<TaskStatusFilter>('ALL')
     const [sort, setSort] = useState<TaskSortOption>('NEWEST')
     const [formMode, setFormMode] = useState<'create' | 'edit'>('create')
     const [formOpen, setFormOpen] = useState(false)
@@ -80,6 +82,8 @@ export default function TasksPage() {
 
         void loadTasks()
     }, [])
+
+    const statusFilter = parseTaskStatus(searchParams.get('status'))
 
     const visibleTasks = useMemo(
         () => filterAndSortTasks(tasks, { search, sort, status: statusFilter }),
@@ -165,7 +169,7 @@ export default function TasksPage() {
 
     function clearFilters() {
         setSearch('')
-        setStatusFilter('ALL')
+        setSearchParams((current) => withTaskStatus(current, 'ALL'))
     }
 
     return (
@@ -219,7 +223,12 @@ export default function TasksPage() {
                     <Select
                         label="Status"
                         labelId="task-status-filter-label"
-                        onChange={(event) => setStatusFilter(event.target.value as TaskStatusFilter)}
+                        onChange={(event) => {
+                            const nextStatus = event.target.value as TaskStatusFilter
+                            setSearchParams(
+                                (current) => withTaskStatus(current, nextStatus),
+                            )
+                        }}
                         value={statusFilter}
                     >
                         {STATUS_FILTER_OPTIONS.map((option) => (
