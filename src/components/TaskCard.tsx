@@ -1,24 +1,19 @@
-import { useState } from 'react'
 import {
-    Alert,
     Box,
     Button,
     Card,
     CardContent,
     Chip,
-    MenuItem,
-    Select,
     Stack,
     Typography,
 } from '@mui/material'
-import type { SelectChangeEvent } from '@mui/material'
-import { deleteTask, getTaskErrorMessage, updateTask } from '../api/taskApi'
 import type { TaskResponse, TaskStatus } from '../types/task'
 
 interface TaskCardProps {
     task: TaskResponse
-    onUpdated: (task: TaskResponse) => void
-    onDeleted: (taskId: string) => void
+    onEdit: (task: TaskResponse) => void
+    onDelete: (task: TaskResponse) => void
+    isDeleting: boolean
 }
 
 const STATUS_LABELS: Record<TaskStatus, string> = {
@@ -38,66 +33,10 @@ const STATUS_COLORS: Record<
 
 export default function TaskCard({
                                      task,
-                                     onUpdated,
-                                     onDeleted,
+                                     onEdit,
+                                     onDelete,
+                                     isDeleting,
                                  }: TaskCardProps) {
-    const [status, setStatus] = useState<TaskStatus>(task.status)
-    const [submitting, setSubmitting] = useState(false)
-    const [error, setError] = useState<string | null>(null)
-
-    function handleStatusChange(event: SelectChangeEvent) {
-        setStatus(event.target.value as TaskStatus)
-    }
-
-    async function handleUpdate() {
-        if (submitting) {
-            return
-        }
-
-        try {
-            setSubmitting(true)
-            setError(null)
-
-            const updatedTask = await updateTask(task.id, {
-                title: task.title,
-                description: task.description,
-                status,
-            })
-
-            onUpdated(updatedTask)
-        } catch (error: unknown) {
-            setError(getTaskErrorMessage(error, 'Task could not be updated.'))
-        } finally {
-            setSubmitting(false)
-        }
-    }
-
-    async function handleDelete() {
-        if (submitting) {
-            return
-        }
-
-        const confirmed = window.confirm(
-            `Do you want to delete "${task.title}"?`,
-        )
-
-        if (!confirmed) {
-            return
-        }
-
-        try {
-            setSubmitting(true)
-            setError(null)
-
-            await deleteTask(task.id)
-            onDeleted(task.id)
-        } catch (error: unknown) {
-            setError(getTaskErrorMessage(error, 'Task could not be deleted.'))
-        } finally {
-            setSubmitting(false)
-        }
-    }
-
     return (
         <Card>
             <CardContent>
@@ -123,8 +62,6 @@ export default function TaskCard({
                         {task.description}
                     </Typography>
 
-                    {error && <Alert severity="error">{error}</Alert>}
-
                     <Box
                         sx={{
                             display: 'flex',
@@ -132,31 +69,19 @@ export default function TaskCard({
                             flexWrap: 'wrap',
                         }}
                     >
-                        <Select
-                            size="small"
-                            value={status}
-                            onChange={handleStatusChange}
-                            disabled={submitting}
-                            sx={{ minWidth: 180 }}
-                        >
-                            <MenuItem value="TODO">TO DO</MenuItem>
-                            <MenuItem value="IN_PROGRESS">IN PROGRESS</MenuItem>
-                            <MenuItem value="COMPLETED">COMPLETED</MenuItem>
-                        </Select>
-
                         <Button
                             variant="contained"
-                            onClick={handleUpdate}
-                            disabled={submitting || status === task.status}
+                            onClick={() => onEdit(task)}
+                            disabled={isDeleting}
                         >
-                            UPDATE
+                            EDIT
                         </Button>
 
                         <Button
                             variant="outlined"
                             color="error"
-                            onClick={handleDelete}
-                            disabled={submitting}
+                            onClick={() => onDelete(task)}
+                            disabled={isDeleting}
                         >
                             DELETE
                         </Button>

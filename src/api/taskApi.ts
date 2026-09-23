@@ -62,5 +62,5 @@ export async function updateTask(
 }
 
 export async function deleteTask(taskId: string): Promise<void> {
-    await http.delete(`/api/tasks/${taskId}`)
+    await http.delete<void>(`/api/tasks/${taskId}`)
 }
