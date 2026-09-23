@@ -9,11 +9,11 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
-import { createTask } from '../api/taskApi'
-import type { Task } from '../types/task'
+import { createTask, getTaskErrorMessage } from '../api/taskApi'
+import type { TaskResponse } from '../types/task'
 
 interface CreateTaskFormProps {
-    onCreated: (task: Task) => void
+    onCreated: (task: TaskResponse) => void
 }
 
 export default function CreateTaskForm({
@@ -27,6 +27,10 @@ export default function CreateTaskForm({
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
 
+        if (submitting) {
+            return
+        }
+
         if (!title.trim()) {
             setError('Title is required.')
             return
@@ -37,7 +41,6 @@ export default function CreateTaskForm({
             setError(null)
 
             const task = await createTask({
-                userId: 'user-1',
                 title: title.trim(),
                 description: description.trim(),
             })
@@ -45,8 +48,8 @@ export default function CreateTaskForm({
             onCreated(task)
             setTitle('')
             setDescription('')
-        } catch {
-            setError('Task could not be created.')
+        } catch (error: unknown) {
+            setError(getTaskErrorMessage(error, 'Task could not be created.'))
         } finally {
             setSubmitting(false)
         }

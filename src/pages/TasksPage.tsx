@@ -6,15 +6,13 @@ import {
     Stack,
     Typography,
 } from '@mui/material'
-import { getTasks } from '../api/taskApi'
+import { getTaskErrorMessage, getTasks } from '../api/taskApi'
 import CreateTaskForm from '../components/CreateTaskForm'
 import TaskCard from '../components/TaskCard'
-import type { Task } from '../types/task'
-
-const USER_ID = 'user-1'
+import type { TaskResponse } from '../types/task'
 
 export default function TasksPage() {
-    const [tasks, setTasks] = useState<Task[]>([])
+    const [tasks, setTasks] = useState<TaskResponse[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
@@ -24,10 +22,10 @@ export default function TasksPage() {
                 setLoading(true)
                 setError(null)
 
-                const response = await getTasks(USER_ID)
+                const response = await getTasks()
                 setTasks(response)
-            } catch {
-                setError('Tasks could not be loaded.')
+            } catch (error: unknown) {
+                setError(getTaskErrorMessage(error, 'Tasks could not be loaded.'))
             } finally {
                 setLoading(false)
             }
@@ -36,11 +34,11 @@ export default function TasksPage() {
         void loadTasks()
     }, [])
 
-    function handleTaskCreated(task: Task) {
+    function handleTaskCreated(task: TaskResponse) {
         setTasks((currentTasks) => [task, ...currentTasks])
     }
 
-    function handleTaskUpdated(updatedTask: Task) {
+    function handleTaskUpdated(updatedTask: TaskResponse) {
         setTasks((currentTasks) =>
             currentTasks.map((task) =>
                 task.id === updatedTask.id ? updatedTask : task,
@@ -57,10 +55,10 @@ export default function TasksPage() {
     return (
         <Stack spacing={3}>
             <Box>
-                <Typography variant="h4">Task Management</Typography>
+                <Typography variant="h4">Your Tasks</Typography>
 
                 <Typography color="text.secondary">
-                    User: {USER_ID}
+                    Manage the tasks assigned to your account.
                 </Typography>
             </Box>
 

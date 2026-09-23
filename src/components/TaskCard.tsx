@@ -12,12 +12,12 @@ import {
     Typography,
 } from '@mui/material'
 import type { SelectChangeEvent } from '@mui/material'
-import { deleteTask, updateTask } from '../api/taskApi'
-import type { Task, TaskStatus } from '../types/task'
+import { deleteTask, getTaskErrorMessage, updateTask } from '../api/taskApi'
+import type { TaskResponse, TaskStatus } from '../types/task'
 
 interface TaskCardProps {
-    task: Task
-    onUpdated: (task: Task) => void
+    task: TaskResponse
+    onUpdated: (task: TaskResponse) => void
     onDeleted: (taskId: string) => void
 }
 
@@ -50,6 +50,10 @@ export default function TaskCard({
     }
 
     async function handleUpdate() {
+        if (submitting) {
+            return
+        }
+
         try {
             setSubmitting(true)
             setError(null)
@@ -61,14 +65,18 @@ export default function TaskCard({
             })
 
             onUpdated(updatedTask)
-        } catch {
-            setError('Task could not be updated.')
+        } catch (error: unknown) {
+            setError(getTaskErrorMessage(error, 'Task could not be updated.'))
         } finally {
             setSubmitting(false)
         }
     }
 
     async function handleDelete() {
+        if (submitting) {
+            return
+        }
+
         const confirmed = window.confirm(
             `Do you want to delete "${task.title}"?`,
         )
@@ -83,8 +91,9 @@ export default function TaskCard({
 
             await deleteTask(task.id)
             onDeleted(task.id)
-        } catch {
-            setError('Task could not be deleted.')
+        } catch (error: unknown) {
+            setError(getTaskErrorMessage(error, 'Task could not be deleted.'))
+        } finally {
             setSubmitting(false)
         }
     }

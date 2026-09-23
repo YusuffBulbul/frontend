@@ -1,6 +1,6 @@
 export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'COMPLETED'
 
-export interface Task {
+export interface TaskResponse {
     id: string
     userId: string
     title: string
@@ -10,7 +10,6 @@ export interface Task {
 }
 
 export interface CreateTaskRequest {
-    userId: string
     title: string
     description: string
 }

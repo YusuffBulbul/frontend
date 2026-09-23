@@ -1,88 +1,47 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  CssBaseline,
-  Toolbar,
-  Typography,
-} from '@mui/material'
+import { CssBaseline } from '@mui/material'
 import {
   BrowserRouter,
-  Link,
   Navigate,
   Route,
   Routes,
 } from 'react-router-dom'
+import { useAuth } from './auth/useAuth'
+import AppShell from './layout/AppShell'
 import AnalyticsPage from './pages/AnalyticsPage'
+import DashboardPage from './pages/DashboardPage'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
 import TasksPage from './pages/TasksPage'
+import ProtectedRoute from './routes/ProtectedRoute'
+import PublicOnlyRoute from './routes/PublicOnlyRoute'
+import RouteLoading from './routes/RouteLoading'
+
+function HomeRedirect() {
+  const { isAuthenticated, isInitializing } = useAuth()
+
+  if (isInitializing) return <RouteLoading />
+  return <Navigate replace to={isAuthenticated ? '/dashboard' : '/login'} />
+}
 
 export default function App() {
   return (
       <BrowserRouter>
         <CssBaseline />
-
-        <AppBar position="static">
-          <Toolbar>
-            <Typography
-                variant="h6"
-                sx={{
-                  flexGrow: 1,
-                }}
-            >
-              Task Management System
-            </Typography>
-
-            <Box
-                sx={{
-                  display: 'flex',
-                  gap: 1,
-                }}
-            >
-              <Button
-                  color="inherit"
-                  component={Link}
-                  to="/tasks"
-              >
-                Tasks
-              </Button>
-
-              <Button
-                  color="inherit"
-                  component={Link}
-                  to="/analytics"
-              >
-                Analytics
-              </Button>
-            </Box>
-          </Toolbar>
-        </AppBar>
-
-        <Container
-            maxWidth="lg"
-            sx={{
-              py: 4,
-            }}
-        >
           <Routes>
-            <Route path="/tasks" element={<TasksPage />} />
-
-            <Route
-                path="/analytics"
-                element={<AnalyticsPage />}
-            />
-
-            <Route
-                path="/"
-                element={<Navigate to="/tasks" replace />}
-            />
-
-            <Route
-                path="*"
-                element={<Navigate to="/tasks" replace />}
-            />
+            <Route element={<PublicOnlyRoute />}>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+            </Route>
+            <Route element={<ProtectedRoute />}>
+              <Route element={<AppShell />}>
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/tasks" element={<TasksPage />} />
+                <Route path="/analytics" element={<AnalyticsPage />} />
+              </Route>
+            </Route>
+            <Route path="/" element={<HomeRedirect />} />
+            <Route path="*" element={<HomeRedirect />} />
           </Routes>
-        </Container>
       </BrowserRouter>
   )
 }
