@@ -10,6 +10,7 @@ import AppShell from './layout/AppShell'
 import AnalyticsPage from './pages/AnalyticsPage'
 import DashboardPage from './pages/DashboardPage'
 import LoginPage from './pages/LoginPage'
+import KanbanPage from './pages/KanbanPage'
 import RegisterPage from './pages/RegisterPage'
 import TasksPage from './pages/TasksPage'
 import ProtectedRoute from './routes/ProtectedRoute'
@@ -35,6 +36,7 @@ export default function App() {
             <Route element={<ProtectedRoute />}>
               <Route element={<AppShell />}>
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/kanban" element={<KanbanPage />} />
                 <Route path="/tasks" element={<TasksPage />} />
                 <Route path="/analytics" element={<AnalyticsPage />} />
               </Route>

@@ -28,6 +28,7 @@ const DRAWER_WIDTH = 248
 
 const navigationItems = [
     { label: 'Dashboard', path: '/dashboard', icon: <DashboardOutlinedIcon /> },
+    { label: 'Kanban', path: '/kanban', icon: <DashboardOutlinedIcon /> },
     { label: 'Tasks', path: '/tasks', icon: <AssignmentOutlinedIcon /> },
     { label: 'Analytics', path: '/analytics', icon: <InsightsOutlinedIcon /> },
 ]

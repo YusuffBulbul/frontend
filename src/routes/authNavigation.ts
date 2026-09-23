@@ -1,5 +1,5 @@
 const DEFAULT_AUTHENTICATED_PATH = '/dashboard'
-const PROTECTED_PATHS = ['/dashboard', '/tasks', '/analytics']
+const PROTECTED_PATHS = ['/dashboard', '/kanban', '/tasks', '/analytics']
 
 export interface AuthRedirectState {
     from?: string
