@@ -50,7 +50,7 @@ export default function LoginPage() {
         <Box
             sx={{
                 alignItems: 'center',
-                backgroundColor: '#f5f7fb',
+                backgroundColor: 'background.default',
                 display: 'flex',
                 justifyContent: 'center',
                 minHeight: '100vh',

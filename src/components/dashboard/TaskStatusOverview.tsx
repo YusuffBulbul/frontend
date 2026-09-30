@@ -46,7 +46,8 @@ export default function TaskStatusOverview({
                     role="img"
                     sx={{
                         alignItems: 'center',
-                        background: total > 0 ? `conic-gradient(${segments.join(', ')})` : '#e0e0e0',
+                        background: total > 0 ? `conic-gradient(${segments.join(', ')})` : undefined,
+                        backgroundColor: total > 0 ? undefined : 'action.disabledBackground',
                         borderRadius: '50%',
                         display: 'flex',
                         height: 128,

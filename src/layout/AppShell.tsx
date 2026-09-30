@@ -24,6 +24,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
 import { hasAdminRole } from '../utils/authRoles'
+import { ThemeModeToggle } from '../theme/AppThemeProvider'
 
 const DRAWER_WIDTH = 248
 
@@ -83,7 +84,7 @@ export default function AppShell() {
     }
 
     return (
-        <Box sx={{ backgroundColor: '#f5f7fb', display: 'flex', minHeight: '100vh' }}>
+        <Box sx={{ backgroundColor: 'background.default', display: 'flex', minHeight: '100vh' }}>
             <AppBar
                 color="inherit"
                 elevation={0}
@@ -106,6 +107,7 @@ export default function AppShell() {
                     <Typography sx={{ flexGrow: 1, fontWeight: 700 }} variant="h6">
                         Workspace
                     </Typography>
+                    <ThemeModeToggle />
                     <IconButton
                         aria-label="Open user menu"
                         onClick={(event) => setAccountAnchor(event.currentTarget)}

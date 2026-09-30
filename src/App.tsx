@@ -1,4 +1,3 @@
-import { CssBaseline } from '@mui/material'
 import {
   BrowserRouter,
   Navigate,
@@ -28,7 +27,6 @@ function HomeRedirect() {
 export default function App() {
   return (
       <BrowserRouter>
-        <CssBaseline />
           <Routes>
             <Route element={<PublicOnlyRoute />}>
               <Route path="/login" element={<LoginPage />} />

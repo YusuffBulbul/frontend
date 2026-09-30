@@ -28,7 +28,7 @@ export default function KanbanColumn({
             variant="outlined"
             aria-label={`${title} column with ${tasks.length} tasks`}
             sx={{
-                backgroundColor: isOver ? 'rgba(25, 118, 210, 0.08)' : '#f8f9fc',
+                backgroundColor: isOver ? 'action.hover' : 'background.paper',
                 borderColor: isOver ? 'primary.main' : 'divider',
                 display: 'flex',
                 flexDirection: 'column',
