@@ -129,7 +129,7 @@ export default function DashboardPage() {
             <Card
                 component="section"
                 sx={{
-                    background: 'linear-gradient(135deg, #f0f5ff 0%, #ffffff 60%)',
+                    background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main}1a 0%, ${theme.palette.background.paper} 60%)`,
                     border: '1px solid',
                     borderColor: 'primary.light',
                 }}
